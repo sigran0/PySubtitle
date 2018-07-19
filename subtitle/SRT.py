@@ -28,7 +28,7 @@ class SRT(Subtitle):
 
             number = int(lines[0])
             (start_time, end_time) = parse_time_string(lines[1])
-            subtitle_text = lines_to_string(lines[2:])
+            subtitle_text = lines_to_string(lines[2:], newline='\n')
 
             subtitle_object = {
                 'number': number,
@@ -48,3 +48,5 @@ srt = SRT()
 
 srt.parse('../data/10x01.srt')
 print(srt.subtitle)
+
+# 1.1

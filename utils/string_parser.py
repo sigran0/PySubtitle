@@ -20,5 +20,5 @@ def parse_time_string(time_string):
     return (_string_to_time_string(start_time_string), _string_to_time_string(end_time_string))
 
 
-def lines_to_string(target):
-    return str(reduce(lambda x, y: x + y, target))
+def lines_to_string(target, newline=''):
+    return str(reduce(lambda x, y: x + newline + y, target))
