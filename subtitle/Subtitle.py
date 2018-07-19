@@ -1,16 +1,24 @@
 
 from abc import *
 import os.path as path
-
+import itertools
 
 class Subtitle(metaclass=ABCMeta):
 
     def __init__(self):
-        self.lines = list()
+        self.subtitle = list()
 
     @abstractmethod
-    def read_file(self, file_path):
+    def _read_file(self, file_path, encoding='utf-8'):
         self._check_file_path(file_path)
+        pass
+
+    @abstractmethod
+    def parse(self, file_path, encoding='utf-8'):
+        pass
+
+    @abstractmethod
+    def make_file(self, file_path, encoding='utf-8'):
         pass
 
     def _check_time_tuple(self, time_tuple):
@@ -21,7 +29,7 @@ class Subtitle(metaclass=ABCMeta):
         if path.isfile(file_path) is not True:
             raise ValueError('please give valid file path')
 
-    def get_hmsms(self, time_tuple, _format='{}:{}:{}.{}'):
+    def _get_hmsms(self, time_tuple, _format='{}:{}:{}.{}'):
         #   (hour, min, sec, milsec)
         self._check_time_tuple(time_tuple)
         string_list = []
@@ -33,15 +41,7 @@ class Subtitle(metaclass=ABCMeta):
 
         return _format.format(*string_list)
 
-    def get_subtitle(self):
-        return '\n'.join(self.lines)
-
-    def make_subtitle(self, file_path):
-        with open(file_path, 'w') as wf:
-            subtitle_string = self.get_subtitle()
-            wf.writelines(subtitle_string)
-
-    def numbering(self, num, size_of_zero=2):
+    def _numbering(self, num, size_of_zero=2):
 
         result_string = ''
 
@@ -59,3 +59,11 @@ class Subtitle(metaclass=ABCMeta):
         result_string += '{}'.format(num)
 
         return result_string
+
+    def get_subtitle(self):
+        return '\n'.join(self.subtitle)
+
+    def make_subtitle(self, file_path):
+        with open(file_path, 'w') as wf:
+            subtitle_string = self.get_subtitle()
+            wf.writelines(subtitle_string)
