@@ -11,11 +11,14 @@ class VTT(Subtitle):
         Subtitle.__init__(self, _sub_=_sub_)
 
     def _read_file(self, file_path, encoding='utf-8', lang='ENCC'):
+        super(VTT, self)._read_file(file_path)
         with open(file_path, 'r', encoding=encoding) as f:
             lines = f.readlines()
         return lines
 
-    def parse(self, file_path, encoding='utf-8'):
+    def parse(self, file_path, encoding='utf-8', lang='ENCC'):
+        super(VTT, self).parse(file_path)
+        
         lines = self._read_file(file_path, encoding)
         target_string = lines_to_string(lines)
         target_string = target_string.replace('WEBVTT\n\n', '')
@@ -45,6 +48,7 @@ class VTT(Subtitle):
             self._subtitle_.append(subtitle_object)
 
     def make_file(self, file_path, sub_range=None, encoding='utf-8'):
+        super(VTT, self).make_file(file_path)
 
         if sub_range is None:
             target_list = self._subtitle_

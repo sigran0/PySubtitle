@@ -2,6 +2,7 @@
 from abc import *
 import os.path as path
 import itertools
+import copy
 
 
 class Subtitle(metaclass=ABCMeta):
@@ -19,21 +20,18 @@ class Subtitle(metaclass=ABCMeta):
     @abstractmethod
     def _read_file(self, file_path, encoding='utf-8', lang='ENCC'):
         self._check_file_path(file_path)
-        pass
 
     @abstractmethod
-    def parse(self, file_path, encoding='utf-8'):
+    def parse(self, file_path, encoding='utf-8', lang='ENCC'):
         self._is_initialized_ = True
-        pass
+        self._subtitle_ = list()
 
     @abstractmethod
     def make_file(self, file_path, sub_range=None, encoding='utf-8'):
         self._check_initialized()
-        pass
 
     def convert_to(self, target_type):
-        #   TODO    abstactmethod 의 default 기능들이 작동을 하지 않는다..?
-        # self._check_initialized()
+        self._check_initialized()
         self._check_convert_target_type(target_type)
 
         if target_type in ('srt', 'SRT'):
@@ -47,11 +45,14 @@ class Subtitle(metaclass=ABCMeta):
             return SMI(self._subtitle_)
 
     def slice(self, start_milsec, end_milsec):
+        self._check_initialized()
+
         sub_subtitle_list = self._get_sub_subtitle_list_(start_milsec, end_milsec)
         self._subtitle_ = sub_subtitle_list
-        return self
+        return copy.deepcopy(self)
 
     def shift(self, milsec):
+        self._check_initialized()
 
         for sub in self._subtitle_:
             sub['start_time'] += milsec
@@ -60,9 +61,11 @@ class Subtitle(metaclass=ABCMeta):
             if sub['start_time'] < 0 or sub['end_time'] < 0:
                 raise ValueError('given milliseconds parameter is so big')
 
-        return self
+        return copy.deepcopy(self)
 
     def _get_sub_index(self, start_milsec, end_milsec):
+        self._check_initialized()
+
         result_index_list = list()
 
         for sub in self._subtitle_:
@@ -80,6 +83,8 @@ class Subtitle(metaclass=ABCMeta):
         return result_index_list
 
     def _get_sub_subtitle_list_(self, start_milsec, end_milsec):
+        self._check_initialized()
+
         result_subtitle_list = list()
         sub_indies = self._get_sub_index(start_milsec, end_milsec)
 

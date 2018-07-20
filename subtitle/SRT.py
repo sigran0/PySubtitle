@@ -11,11 +11,13 @@ class SRT(Subtitle):
         Subtitle.__init__(self, _sub_=_sub_)
 
     def _read_file(self, file_path, encoding='utf-8', lang='ENCC'):
+        super(SRT, self)._read_file(file_path, encoding, lang)
         with open(file_path, 'r', encoding=encoding) as f:
             lines = f.readlines()
         return lines
 
-    def parse(self, file_path, encoding='utf-8'):
+    def parse(self, file_path, encoding='utf-8', lang='ENCC'):
+        super().parse(file_path)
         lines = self._read_file(file_path, encoding)
         target_string = lines_to_string(lines)
 
@@ -42,6 +44,7 @@ class SRT(Subtitle):
             self._subtitle_.append(subtitle_object)
 
     def make_file(self, file_path, sub_range=None, encoding='utf-8'):
+        super(SRT, self).make_file(file_path)
 
         if sub_range is None:
             target_list = self._subtitle_

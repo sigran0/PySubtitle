@@ -11,11 +11,15 @@ class SMI(Subtitle):
         Subtitle.__init__(self, _sub_=_sub_)
 
     def _read_file(self, file_path, encoding='utf-8', lang='ENCC'):
+        super().parse(file_path)
+        
         smi = Smi(file_path)
         return smi.convert('vtt', lang=lang)
 
-    def parse(self, file_path, encoding='utf-8'):
-        lines = self._read_file(file_path, encoding)
+    def parse(self, file_path, encoding='utf-8', lang='ENCC'):
+        super(SMI, self).parse(file_path)
+        
+        lines = self._read_file(file_path, encoding, lang)
         target_string = lines_to_string(lines)
         target_string = target_string.replace('WEBVTT\n\n', '')
         target_string = target_string.replace('WEBVTT\n', '')
@@ -44,4 +48,5 @@ class SMI(Subtitle):
             self._subtitle_.append(subtitle_object)
 
     def make_file(self, file_path, sub_range=None, encoding='utf-8'):
+        super(SMI, self).make_file(file_path)
         pass
