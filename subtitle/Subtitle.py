@@ -6,7 +6,7 @@ import itertools
 
 class Subtitle(metaclass=ABCMeta):
 
-    CONVERT_TYPE = ('srt', 'SRT', 'vtt', 'VTT')
+    CONVERT_TYPE = ('srt', 'SRT', 'vtt', 'VTT', 'smi', 'SMI')
 
     def __init__(self, _sub_=None):
         self._subtitle_ = list()
@@ -31,10 +31,39 @@ class Subtitle(metaclass=ABCMeta):
         self._check_initialized()
         pass
 
-    @abstractmethod
     def convert_to(self, target_type):
+        #   TODO    abstactmethod 의 default 기능들이 작동을 하지 않는다..?
+        # self._check_initialized()
         self._check_convert_target_type(target_type)
-        pass
+
+        if target_type in ('srt', 'SRT'):
+            from subtitle.SRT import SRT
+            return SRT(self._subtitle_)
+        elif target_type in ('vtt', 'VTT'):
+            from subtitle.VTT import VTT
+            return VTT(self._subtitle_)
+        elif target_type in ('smi', 'SMI'):
+            from subtitle.SMI import SMI
+            return SMI(self._subtitle_)
+
+    def _hmsms_to_milsec(self, hmsms):
+        #   hour    : 60 * 60 * 1000
+        #   min     : 60 * 1000
+        #   sec     : 1000
+        #   milsec  : 1
+        return (hmsms[0] * 60 * 60 * 1000) + (hmsms[1] * 60 * 1000) + (hmsms[2] * 1000) + (hmsms[3])
+
+    def _milsec_to_hmsms(self, milsec):
+        _hour = int(milsec / (60 * 60 * 1000))
+        milsec -= _hour * (60 * 60 * 1000)
+
+        _min = int(milsec / (60 * 1000))
+        milsec -= _min * (60 * 1000)
+
+        _sec = int(milsec / 1000)
+        milsec -= _sec * 1000
+
+        return _hour, _min, _sec, milsec
 
     def _set_subtitle_(self, _subtitle):
         self._is_initialized_ = True

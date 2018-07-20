@@ -15,12 +15,6 @@ class VTT(Subtitle):
             lines = f.readlines()
         return lines
 
-    def convert_to(self, target_type):
-
-        if target_type in ('srt', 'SRT'):
-            from subtitle.SRT import SRT
-            return SRT(self._subtitle_)
-
     def parse(self, file_path, encoding='utf-8'):
         lines = self._read_file(file_path, encoding)
         target_string = lines_to_string(lines)
