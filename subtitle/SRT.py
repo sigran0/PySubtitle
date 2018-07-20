@@ -57,7 +57,3 @@ class SRT(Subtitle):
                 f.write(str(sub['number']) + '\n')
                 f.write('{} --> {}\n'.format(start_time_string, end_time_string))
                 f.write(sub['text'] + '\n\n')
-
-srt = SRT()
-srt.parse('../data/1.srt')
-srt.slice(5000, 20000).shift(-5000).convert_to('vtt').make_file('../data/1.vtt')

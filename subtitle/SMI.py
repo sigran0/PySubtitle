@@ -45,8 +45,3 @@ class SMI(Subtitle):
 
     def make_file(self, file_path, sub_range=None, encoding='utf-8'):
         pass
-
-smi = SMI()
-smi.parse('D:/dev/workspace/python3/PySubtitle/data/1001.smi')
-smi.convert_to('vtt').make_file('../data/1001.vtt')
-smi.convert_to('srt').make_file('../data/1001.srt')
