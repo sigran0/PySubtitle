@@ -3,6 +3,7 @@ from subtitle.Subtitle import Subtitle
 from utils.string_parser import parse_time_string
 from utils.string_parser import lines_to_string
 
+
 class SRT(Subtitle):
 
     def __init__(self):
@@ -37,16 +38,9 @@ class SRT(Subtitle):
                 'text': subtitle_text
             }
 
-            self.subtitle.append(subtitle_object)
+            self._subtitle.append(subtitle_object)
 
     def make_file(self, file_path, encoding='utf-8'):
 
         with open(file_path, 'w') as f:
             pass
-
-srt = SRT()
-
-srt.parse('../data/10x01.srt')
-print(srt.subtitle)
-
-# 1.1

@@ -1,18 +1,18 @@
 
 from subtitle.Subtitle import Subtitle
+from samitizer import Smi
 from utils.string_parser import parse_time_string
 from utils.string_parser import lines_to_string
 
 
-class VTT(Subtitle):
+class SMI(Subtitle):
 
     def __init__(self):
         Subtitle.__init__(self)
 
     def _read_file(self, file_path, encoding='utf-8'):
-        with open(file_path, 'r', encoding=encoding) as f:
-            lines = f.readlines()
-        return lines
+        smi = Smi(file_path)
+        return smi.convert('vtt', lang='ENCC')
 
     def parse(self, file_path, encoding='utf-8'):
         lines = self._read_file(file_path, encoding)
@@ -44,6 +44,4 @@ class VTT(Subtitle):
             self._subtitle.append(subtitle_object)
 
     def make_file(self, file_path, encoding='utf-8'):
-
-        with open(file_path, 'w') as f:
-            pass
+        pass
