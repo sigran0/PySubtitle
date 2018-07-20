@@ -36,8 +36,8 @@ class SMI(Subtitle):
 
             subtitle_object = {
                 'number': number,
-                'start_time': start_time,
-                'end_time': end_time,
+                'start_time': self._hmsms_to_milsec_(start_time),
+                'end_time': self._hmsms_to_milsec_(end_time),
                 'text': subtitle_text
             }
 

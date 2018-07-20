@@ -46,12 +46,28 @@ class Subtitle(metaclass=ABCMeta):
             from subtitle.SMI import SMI
             return SMI(self._subtitle_)
 
+    def slice(self, start_milsec, end_milsec):
+        sub_subtitle_list = self._get_sub_subtitle_list_(start_milsec, end_milsec)
+        self._subtitle_ = sub_subtitle_list
+        return self
+
+    def shift(self, milsec):
+
+        for sub in self._subtitle_:
+            sub['start_time'] += milsec
+            sub['end_time'] += milsec
+
+            if sub['start_time'] < 0 or sub['end_time'] < 0:
+                raise ValueError('given milliseconds parameter is so big')
+
+        return self
+
     def _get_sub_index(self, start_milsec, end_milsec):
         result_index_list = list()
 
         for sub in self._subtitle_:
-            sub_start_milsec = self._hmsms_to_milsec_(sub['start_time'])
-            sub_end_milsec = self._hmsms_to_milsec_(sub['end_time'])
+            sub_start_milsec = sub['start_time']
+            sub_end_milsec = sub['end_time']
 
             if sub_end_milsec > end_milsec:
                 break

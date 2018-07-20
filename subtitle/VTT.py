@@ -37,8 +37,8 @@ class VTT(Subtitle):
 
             subtitle_object = {
                 'number': number,
-                'start_time': start_time,
-                'end_time': end_time,
+                'start_time': self._hmsms_to_milsec_(start_time),
+                'end_time': self._hmsms_to_milsec_(end_time),
                 'text': subtitle_text
             }
 
@@ -56,8 +56,8 @@ class VTT(Subtitle):
             f.write('WEBVTT\n')
 
             for sub in target_list:
-                start_time_string = get_hmsms(sub['start_time'], _format='{}:{}:{}.{}')
-                end_time_string = get_hmsms(sub['end_time'], _format='{}:{}:{}.{}')
+                start_time_string = get_hmsms(self._milsec_to_hmsms_(sub['start_time']), _format='{}:{}:{},{}')
+                end_time_string = get_hmsms(self._milsec_to_hmsms_(sub['end_time']), _format='{}:{}:{},{}')
 
                 f.write(str(sub['number']) + '\n')
                 f.write('{} --> {}\n'.format(start_time_string, end_time_string))

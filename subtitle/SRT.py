@@ -34,8 +34,8 @@ class SRT(Subtitle):
 
             subtitle_object = {
                 'number': number,
-                'start_time': start_time,
-                'end_time': end_time,
+                'start_time': self._hmsms_to_milsec_(start_time),
+                'end_time': self._hmsms_to_milsec_(end_time),
                 'text': subtitle_text
             }
 
@@ -51,8 +51,8 @@ class SRT(Subtitle):
         with open(file_path, 'w', encoding=encoding) as f:
 
             for sub in target_list:
-                start_time_string = get_hmsms(sub['start_time'], _format='{}:{}:{},{}')
-                end_time_string = get_hmsms(sub['end_time'], _format='{}:{}:{},{}')
+                start_time_string = get_hmsms(self._milsec_to_hmsms_(sub['start_time']), _format='{}:{}:{},{}')
+                end_time_string = get_hmsms(self._milsec_to_hmsms_(sub['end_time']), _format='{}:{}:{},{}')
 
                 f.write(str(sub['number']) + '\n')
                 f.write('{} --> {}\n'.format(start_time_string, end_time_string))
@@ -60,4 +60,4 @@ class SRT(Subtitle):
 
 srt = SRT()
 srt.parse('../data/1.srt')
-srt.convert_to('vtt').make_file('../data/1.vtt', sub_range=(6000, 20000))
+srt.slice(5000, 20000).shift(-5000).convert_to('vtt').make_file('../data/1.vtt')
