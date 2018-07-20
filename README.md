@@ -25,8 +25,10 @@ srt.convert_to('VTT').make_file('file_path')
 ```
 
 
-Supported types subtitle
+Supported types of subtitle
 =============
 SRT
+
 VTT
+
 SMI (read only)
