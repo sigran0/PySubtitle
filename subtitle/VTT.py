@@ -2,17 +2,24 @@
 from subtitle.Subtitle import Subtitle
 from utils.string_parser import parse_time_string
 from utils.string_parser import lines_to_string
+from utils.string_parser import get_hmsms
 
 
 class VTT(Subtitle):
 
-    def __init__(self):
-        Subtitle.__init__(self)
+    def __init__(self, _sub_=None):
+        Subtitle.__init__(self, _sub_=_sub_)
 
-    def _read_file(self, file_path, encoding='utf-8'):
+    def _read_file(self, file_path, encoding='utf-8', lang='ENCC'):
         with open(file_path, 'r', encoding=encoding) as f:
             lines = f.readlines()
         return lines
+
+    def convert_to(self, target_type):
+
+        if target_type in ('srt', 'SRT'):
+            from subtitle.SRT import SRT
+            return SRT(self._subtitle_)
 
     def parse(self, file_path, encoding='utf-8'):
         lines = self._read_file(file_path, encoding)
@@ -41,9 +48,18 @@ class VTT(Subtitle):
                 'text': subtitle_text
             }
 
-            self._subtitle.append(subtitle_object)
+            self._subtitle_.append(subtitle_object)
 
-    def make_file(self, file_path, encoding='utf-8'):
+    def make_file(self, file_path, sub_range=None, encoding='utf-8'):
 
         with open(file_path, 'w') as f:
-            pass
+
+            f.write('WEBVTT\n')
+
+            for sub in self._subtitle_:
+                start_time_string = get_hmsms(sub['start_time'], _format='{}:{}:{}.{}')
+                end_time_string = get_hmsms(sub['end_time'], _format='{}:{}:{}.{}')
+
+                f.write(str(sub['number']) + '\n')
+                f.write('{} --> {}\n'.format(start_time_string, end_time_string))
+                f.write(sub['text'] + '\n\n')

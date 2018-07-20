@@ -7,12 +7,21 @@ from utils.string_parser import lines_to_string
 
 class SMI(Subtitle):
 
-    def __init__(self):
-        Subtitle.__init__(self)
+    def __init__(self, _sub_=None):
+        Subtitle.__init__(self, _sub_=_sub_)
 
-    def _read_file(self, file_path, encoding='utf-8'):
+    def _read_file(self, file_path, encoding='utf-8', lang='ENCC'):
         smi = Smi(file_path)
-        return smi.convert('vtt', lang='ENCC')
+        return smi.convert('vtt', lang=lang)
+
+    def convert_to(self, target_type):
+
+        if target_type in ('srt', 'SRT'):
+            from subtitle.SRT import SRT
+            return SRT(self._subtitle_)
+        elif target_type in ('vtt', 'VTT'):
+            from subtitle.VTT import VTT
+            return VTT(self._subtitle_)
 
     def parse(self, file_path, encoding='utf-8'):
         lines = self._read_file(file_path, encoding)
@@ -41,7 +50,13 @@ class SMI(Subtitle):
                 'text': subtitle_text
             }
 
-            self._subtitle.append(subtitle_object)
+            self._subtitle_.append(subtitle_object)
 
-    def make_file(self, file_path, encoding='utf-8'):
+    def make_file(self, file_path, sub_range=None, encoding='utf-8'):
         pass
+
+smi = SMI()
+smi.parse('../data/1001.smi')
+smi.make_file('asd')
+smi.convert_to('vtt').make_file('../data/result.vtt')
+smi.convert_to('srt').make_file('../data/result.srt')
