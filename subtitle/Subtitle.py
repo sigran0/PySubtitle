@@ -46,14 +46,42 @@ class Subtitle(metaclass=ABCMeta):
             from subtitle.SMI import SMI
             return SMI(self._subtitle_)
 
-    def _hmsms_to_milsec(self, hmsms):
+    def _get_sub_index(self, start_milsec, end_milsec):
+        result_index_list = list()
+
+        for sub in self._subtitle_:
+            sub_start_milsec = self._hmsms_to_milsec_(sub['start_time'])
+            sub_end_milsec = self._hmsms_to_milsec_(sub['end_time'])
+
+            if sub_end_milsec > end_milsec:
+                break
+
+            if sub_start_milsec < start_milsec:
+                continue
+
+            result_index_list.append(sub['number'])
+
+        return result_index_list
+
+    def _get_sub_subtitle_list_(self, start_milsec, end_milsec):
+        result_subtitle_list = list()
+        sub_indies = self._get_sub_index(start_milsec, end_milsec)
+
+        for c, sub_index in enumerate(sub_indies):
+            target_subtitle = self._subtitle_[sub_index]
+            target_subtitle['number'] = c + 1
+            result_subtitle_list.append(target_subtitle)
+
+        return result_subtitle_list
+
+    def _hmsms_to_milsec_(self, hmsms):
         #   hour    : 60 * 60 * 1000
         #   min     : 60 * 1000
         #   sec     : 1000
         #   milsec  : 1
         return (hmsms[0] * 60 * 60 * 1000) + (hmsms[1] * 60 * 1000) + (hmsms[2] * 1000) + (hmsms[3])
 
-    def _milsec_to_hmsms(self, milsec):
+    def _milsec_to_hmsms_(self, milsec):
         _hour = int(milsec / (60 * 60 * 1000))
         milsec -= _hour * (60 * 60 * 1000)
 

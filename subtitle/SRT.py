@@ -43,12 +43,21 @@ class SRT(Subtitle):
 
     def make_file(self, file_path, sub_range=None, encoding='utf-8'):
 
-        with open(file_path, 'w') as f:
+        if sub_range is None:
+            target_list = self._subtitle_
+        else:
+            target_list = self._get_sub_subtitle_list_(sub_range[0], sub_range[1])
 
-            for sub in self._subtitle_:
+        with open(file_path, 'w', encoding=encoding) as f:
+
+            for sub in target_list:
                 start_time_string = get_hmsms(sub['start_time'], _format='{}:{}:{},{}')
                 end_time_string = get_hmsms(sub['end_time'], _format='{}:{}:{},{}')
 
                 f.write(str(sub['number']) + '\n')
                 f.write('{} --> {}\n'.format(start_time_string, end_time_string))
                 f.write(sub['text'] + '\n\n')
+
+srt = SRT()
+srt.parse('../data/1.srt')
+srt.convert_to('vtt').make_file('../data/1.vtt', sub_range=(6000, 20000))

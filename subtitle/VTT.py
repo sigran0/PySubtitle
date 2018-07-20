@@ -46,11 +46,16 @@ class VTT(Subtitle):
 
     def make_file(self, file_path, sub_range=None, encoding='utf-8'):
 
+        if sub_range is None:
+            target_list = self._subtitle_
+        else:
+            target_list = self._get_sub_subtitle_list_(sub_range[0], sub_range[1])
+
         with open(file_path, 'w') as f:
 
             f.write('WEBVTT\n')
 
-            for sub in self._subtitle_:
+            for sub in target_list:
                 start_time_string = get_hmsms(sub['start_time'], _format='{}:{}:{}.{}')
                 end_time_string = get_hmsms(sub['end_time'], _format='{}:{}:{}.{}')
 
