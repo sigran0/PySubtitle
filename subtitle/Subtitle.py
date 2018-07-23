@@ -1,8 +1,6 @@
 
 from abc import *
 import os.path as path
-import itertools
-import copy
 
 
 class Subtitle(metaclass=ABCMeta):
@@ -49,7 +47,7 @@ class Subtitle(metaclass=ABCMeta):
 
         sub_subtitle_list = self._get_sub_subtitle_list_(start_milsec, end_milsec)
         self._subtitle_ = sub_subtitle_list
-        return copy.deepcopy(self)
+        return self
 
     def shift(self, milsec):
         self._check_initialized()
@@ -61,7 +59,7 @@ class Subtitle(metaclass=ABCMeta):
             if sub['start_time'] < 0 or sub['end_time'] < 0:
                 raise ValueError('given milliseconds parameter is so big')
 
-        return copy.deepcopy(self)
+        return self
 
     def _get_sub_index(self, start_milsec, end_milsec):
         self._check_initialized()
